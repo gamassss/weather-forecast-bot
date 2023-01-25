@@ -39,6 +39,13 @@ module.exports = {
 
 		let url = (`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,weathercode,windspeed_10m,winddirection_10m&timezone=auto&start_date=${date}&end_date=${date}`)
 
+		async function loadForecastJSON() {
+			const response = await fetch(url);
+			return response.json();
+		}
+
+		const forecastData = await loadForecastJSON();
+
 		await interaction.reply(`Nama kota: ${cityName} lat: ${latitude}, long: ${longitude}. tanggal = ${date}, jam = ${time}, index = ${index}`);
 	},
 };
