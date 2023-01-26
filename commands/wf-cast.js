@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -39,13 +40,15 @@ module.exports = {
 
 		let url = (`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,weathercode,windspeed_10m,winddirection_10m&timezone=auto&start_date=${date}&end_date=${date}`)
 
-		async function loadForecastJSON() {
-			const response = await fetch(url);
-			return response.json();
+		async function loadForecast() {
+			const result = await fetch(url);
+			return result.json();
 		}
 
-		const forecastData = await loadForecastJSON();
-
-		await interaction.reply(`Nama kota: ${cityName} lat: ${latitude}, long: ${longitude}. tanggal = ${date}, jam = ${time}, index = ${index}`);
+		let forecastData = await loadForecast();
+		const stringJSON = JSON.stringify(forecastData)
+		// await interaction.reply(`Nama kota: ${cityName} lat: ${latitude}, long: ${longitude}. tanggal = ${date}, jam = ${time}, index = ${index}, type = ${typeof date}`);
+		// await interaction.reply(url)
+		await interaction.reply(stringJSON)
 	},
 };
