@@ -84,8 +84,10 @@ module.exports = {
 		const rainDescription = '';
 		const rainCode = ['61', '63', '65', '66', '67', '80', '81', '82', '85', '86', '95', '96', '99'];
 
-		if (weather_map.has('3')) {
-			console.log(`${strWMO} pong!`)
+		if (rainCode.includes(strWMO)) {
+			rainDescription = weather_map.get(strWMO)
+		} else {
+			rainDescription = 'Happy no rain day :)'
 		}
 
 
