@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
-const wait = require('node:timers/promises').setTimeout;
+const { weather_map, rainCode } = require('../wmo-code')
+// const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -17,37 +18,6 @@ module.exports = {
 			const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${cityName}`);
 			return response.json();
 		}
-
-		const weather_map = new Map([
-			['0', 'Clear sky'],
-			['1', 'Mainly clear'],
-			['2', 'Partly cloudy'],
-			['3', 'Overcast'],
-			['45', 'Fog'],
-			['48', 'Depositing rime fog'],
-			['51', 'Drizzle light'],
-			['53', 'Drizzle moderate'],
-			['55', 'Drizzle dense intensity'],
-			['56', 'Freezing drizzle light'],
-			['57', 'Freezing drizzle dense intensity'],
-			['61', 'Rain slight'],
-			['63', 'Rain moderate'],
-			['65', 'Rain heavy intensity'],
-			['66', 'Freezing rain light'],
-			['67', 'Freezing rain heavy intensity'],
-			['71', 'Snow fall slight'],
-			['73', 'Snow fall moderate'],
-			['75', 'Snow fall heavy intensity'],
-			['77', 'Snow grains'],
-			['80', 'Rain showers slight'],
-			['81', 'Rain showers moderate'],
-			['82', 'Rain showers violent'],
-			['85', 'Snow showers slight'],
-			['86', 'Snow showers heavy'],
-			['95', 'Thunderstorm slight or moderate'],
-			['96', 'Thunderstorm with slight'],
-			['99', 'Thunderstorm with heavy hail'],
-		])
 
 		let city = await loadCity()
 		// let results = city.results ?? []
@@ -78,11 +48,10 @@ module.exports = {
 
 		let forecastData = await loadForecast();
 		const { hourly } = forecastData
-		let stringJSON = JSON.stringify(hourly)
+		// let stringJSON = JSON.stringify(hourly)
 		const { time, temperature_2m, weathercode, windspeed_10m, winddirection_10m } = hourly;
 		const strWMO = weathercode[index].toString()
-		const rainDescription = '';
-		const rainCode = ['61', '63', '65', '66', '67', '80', '81', '82', '85', '86', '95', '96', '99'];
+		let rainDescription = '';
 
 		if (rainCode.includes(strWMO)) {
 			rainDescription = weather_map.get(strWMO)
@@ -92,6 +61,11 @@ module.exports = {
 
 
 		await interaction.deferReply({ ephemeral: false });
-		await interaction.editReply(`${time[index]} ${temperature_2m[index]} ${weathercode[index]} ${windspeed_10m[index]} ${winddirection_10m[index]} \n${stringJSON}`)
+		await interaction.editReply(`Jam: ${time[index]}\n
+		Suhu: ${temperature_2m[index]}\n
+		CodeWMO: ${weathercode[index]}\n
+		Deskripsi cuaca: ${rainDescription}\n
+		Wind speed: ${windspeed_10m[index]}\n
+		Wind direction:${winddirection_10m[index]}`)
 	},
 };
