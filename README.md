@@ -21,7 +21,6 @@
 1. Clone this repo
 ```
 git clone https://github.com/gamassss/weather-forecast-bot.git
-cd weather-forecast-bot
 ```
 
 2. Go to key.json file. Replace all values with what you have.
@@ -29,5 +28,5 @@ cd weather-forecast-bot
 4. Last, run you bot by type this on your terminal `npm run start`
 ### Voila now your bot is online.
 The bot takes one option for your location's name. 😁
-Give a start to this repo if it's helpful ⭐⭐
+Give a star to this repo if it's helpful # ⭐
 
