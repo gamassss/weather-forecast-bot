@@ -41,7 +41,7 @@ module.exports = {
 
 		const index = parseInt(curIndex);
 
-		let url = (`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,weathercode,windspeed_10m,winddirection_10m&timezone=auto&start_date=${date}&end_date=${date}`)
+		let url = (`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,showers,weathercode,windspeed_10m,winddirection_10m&timezone=auto&start_date=${date}&end_date=${date}`)
 
 		async function loadForecast() {
 			const result = await fetch(url);
@@ -50,54 +50,60 @@ module.exports = {
 
 		let forecastData = await loadForecast();
 		const { hourly } = forecastData
-		const { time, temperature_2m, weathercode, windspeed_10m, winddirection_10m } = hourly;
+		const { time, temperature_2m, showers, weathercode, windspeed_10m, winddirection_10m } = hourly;
 		const strWMO = weathercode[index].toString()
 		let rainDescription = '';
 
-		if (rainCode.includes(strWMO)) {
+		let indexRainHour = -1
+		for (let i = index; i < weathercode.length; i++) {
+			if (rainCode.includes(weathercode[i])) {
+				indexRainHour = i
+				console.log(weathercode[i])
+				break;
+			}
+		}
+		const [ , jam ] = time[indexRainHour].split('T')
+
+		if (rainCode.includes(strWMO) && indexRainHour !== -1) {
 			rainDescription = weather_map.get(strWMO)
 		} else {
 			rainDescription = 'Happy no rain day :)'
 		}
-		const [ , jam ] = time[index].split('T')
 
-		const embed = {
-			title: "Weather Forecast" ,
+		const exampleEmbed = {
 			color: 0xF96221,
+			title: 'Weather Forecast',
+			description: 'Daily Weather Forecast Update in Your Area',
 			thumbnail: {
-				"url": "attachment://weather-icon-for-bot.png"
+				url: 'attachment://weather-icon-for-bot.png',
 			},
 			fields: [
 				{
-					name: "Daily Weather Forecast Update in Your Area",
-					value: "",
-					inline: false
-				},
-				{
-					name: "When is rain?",
-					value: "Two",
+					name: 'When is rain?',
+					value: `${jam}\n${showers[indexRainHour]} mm\n${weather_map.get(weathercode[indexRainHour].toString())}`,
 					inline: true,
 				},
 				{
-					name: "Current Temperature",
-					value: "Two",
+					name: 'Current Temperature',
+					value: `${temperature_2m[index]} °C`,
 					inline: true,
 				},
 				{
-					name:"Wind",
-					value:"Three",
-					inline: true
+					name: 'Wind',
+					value: `Speed ${windspeed_10m[index]}\nDirection ${winddirection_10m[index]}`,
+					inline: true,
 				},
 			],
-			"footer": {
-				"text":`By using this service, you agreed to our Terms and Service.`
-			}
+			timestamp: new Date().toISOString(),
+			footer: {
+				text: 'By using this service, you agreed to our Terms and Service',
+			},
 		};
 
-		// await interaction.deferReply({ ephemeral: false });
-		await interaction.reply({ embeds: [embed], files: [{
+		await interaction.reply({embeds: [exampleEmbed], files: [{
 			attachment:'img/weather-icon-for-bot.png',
 			name:'weather-icon-for-bot.png'
-		}] })
+		}]})
+		
 	},
 };

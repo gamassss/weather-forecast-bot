@@ -1,5 +1,5 @@
 {
-	"bot_token": "MTA2NzA4NDQ2NjEzODM5ODc0MA.Gwhcxn.7X3EzepQIBxIKxk43_vBsUwbFGHJa3eYzFnSVU",
-	"clientId": "1067084466138398740",
-	"guildId": "1066460146974339072"
+	"bot_token": "YOUR_BOT_TOKEN",
+	"clientId": "YOUR_CLIENT_ID",
+	"guildId": "YOUR_GUILD_ID"
 }
