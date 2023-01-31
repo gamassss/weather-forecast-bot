@@ -46,9 +46,8 @@ module.exports = {
 		let forecastData = await loadForecast();
 		const { hourly } = forecastData
 		const { time, temperature_2m, showers, weathercode, windspeed_10m, winddirection_10m } = hourly;
-		const strWMO = weathercode[index].toString()
 		let rainDescription = '';
-
+		
 		let indexRainHour = -1
 		for (let i = index; i < weathercode.length; i++) {
 			if (rainCode.includes(weathercode[i])) {
@@ -57,6 +56,7 @@ module.exports = {
 			}
 		}
 		const [ , jam ] = time[indexRainHour].split('T')
+		const strWMO = weathercode[indexRainHour].toString()
 
 		if (rainCode.includes(strWMO) && indexRainHour !== -1) {
 			rainDescription = weather_map.get(strWMO)
