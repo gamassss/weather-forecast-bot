@@ -1,7 +1,8 @@
 # weather-forecast-bot
 -Bot untuk memberi tau kapan hujan pada jam terdekat pada saat memanggil bot ini.
+-A bot to inform about the nearest rain time when calling this bot.
 
--Follow the steps below to have this bot on your Discord server.
+### Follow the steps below to have this bot on your Discord server.
 
 # Install NodeJS
 -You need to install [NodeJS](https://nodejs.org/en/) first.
@@ -27,6 +28,6 @@ git clone https://github.com/gamassss/weather-forecast-bot.git
 3. To get your guild id: Go to User Settings -> Advanced -> Enable developer mode -> Right Click on your discord server -> Copy ID
 4. Last, run you bot by type this on your terminal `npm run start`
 ### Voila now your bot is online.
-The bot takes one option for your location's name. 😁
+The bot takes one mandatory option for your location's name. 😁
 Give a star to this repo if it's helpful # ⭐
 
