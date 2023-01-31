@@ -29,5 +29,5 @@ git clone https://github.com/gamassss/weather-forecast-bot.git
 4. Last, run you bot by type this on your terminal `npm run start`
 ### Voila now your bot is online.
 The bot takes one mandatory option for your location's name. 😁
-Give a star to this repo if it's helpful # ⭐
+Give a star to this repo if it's helpful ⭐⭐⭐⭐⭐
 
