@@ -18,13 +18,16 @@ module.exports = {
 		}
 		const city = await loadCity()
 		const { results } = city ?? []
+		if (!results) {
+			await interaction.reply(`Sorry, there is no location with that name.`)
+			return;
+		}
 		/* get first instance of city from search query */
 		const latitude = results[0].latitude
 		const longitude = results[0].longitude
 		const event = new Date();
-		const todayDate = event.toLocaleDateString('en-GB');
-		const nowTime = event.toLocaleTimeString();
-
+		const todayDate = event.toLocaleDateString('en-GB', { timeZone: 'Asia/Bangkok' });
+		const nowTime = event.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'});
 		const dateFormat = todayDate.split('/');
 		const date = dateFormat.reverse().join('-');
 		// currentTime untuk menyimpan index
@@ -37,7 +40,7 @@ module.exports = {
 		const index = parseInt(curIndex);
 
 		let url = (`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,showers,weathercode,windspeed_10m,winddirection_10m&timezone=auto&start_date=${date}&end_date=${date}`)
-
+		
 		async function loadForecast() {
 			const result = await fetch(url);
 			return result.json();
@@ -55,13 +58,17 @@ module.exports = {
 				break;
 			}
 		}
-		const [ , jam ] = time[indexRainHour].split('T')
-		const strWMO = weathercode[indexRainHour].toString()
 
+		if (indexRainHour === -1) {
+			await interaction.reply(`Happy no rain day for ${cityName} :)`)
+			return;
+		}
+
+		const strWMO = weathercode[indexRainHour].toString()
+		const [ , jam ] = time[indexRainHour].split('T')
+		// let jam = 0;
 		if (rainCode.includes(strWMO) && indexRainHour !== -1) {
 			rainDescription = weather_map.get(strWMO)
-		} else {
-			rainDescription = 'Happy no rain day :)'
 		}
 
 		const exampleEmbed = {
@@ -74,7 +81,7 @@ module.exports = {
 			fields: [
 				{
 					name: 'When is rain?',
-					value: `${jam}\n${showers[indexRainHour]} mm\n${weather_map.get(weathercode[indexRainHour].toString())}`,
+					value: `${jam}\n${showers[indexRainHour]} mm\n${rainDescription}`,
 					inline: true,
 				},
 				{
@@ -94,10 +101,10 @@ module.exports = {
 			},
 		};
 
-		await interaction.reply({embeds: [exampleEmbed], files: [{
-			attachment:'img/weather-icon-for-bot.png',
-			name:'weather-icon-for-bot.png'
-		}]})
-		
+			await interaction.reply({embeds: [exampleEmbed], files: [{
+				attachment:'img/weather-icon-for-bot.png',
+				name:'weather-icon-for-bot.png'
+			}]})
+
 	},
 };
