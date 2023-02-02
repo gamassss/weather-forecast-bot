@@ -31,7 +31,7 @@ module.exports = {
 		const dateFormat = todayDate.split('/');
 		const date = dateFormat.reverse().join('-');
 		// currentTime untuk menyimpan index
-		const [ curIndex ] = nowTime.split(':')
+		let [ curIndex ] = nowTime.split(':')
 
 		if (curIndex.includes('0')) {
 			curIndex = curIndex[0][1];
