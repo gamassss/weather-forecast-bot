@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { weather_map, rainCode } = require('../wmo-code')
+const { weather_map, rainCode } = require('../wmo-code');
+const { loadCity, loadForecast } = require('../handler');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,16 +13,17 @@ module.exports = {
 				.setRequired(true)),
 	async execute(interaction) {
 		const cityName = interaction.options.getString('locations') ?? 'No city choosen';
-		async function loadCity() {
-			const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${cityName}`);
-			return response.json();
-		}
-		const city = await loadCity()
+
+		const urlGeocoding = `https://geocoding-api.open-meteo.com/v1/search?name=${cityName}`
+
+		const city = await loadCity(urlGeocoding)
 		const { results } = city ?? []
+
 		if (!results) {
 			await interaction.reply(`Sorry, there is no location with that name.`)
 			return;
 		}
+
 		/* get first instance of city from search query */
 		const latitude = results[0].latitude
 		const longitude = results[0].longitude
@@ -39,19 +41,15 @@ module.exports = {
 
 		const index = parseInt(curIndex);
 
-		let url = (`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,showers,weathercode,windspeed_10m,winddirection_10m&timezone=auto&start_date=${date}&end_date=${date}`)
-		
-		async function loadForecast() {
-			const result = await fetch(url);
-			return result.json();
-		}
+		let url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,showers,weathercode,windspeed_10m,winddirection_10m&timezone=auto&start_date=${date}&end_date=${date}`
 
-		let forecastData = await loadForecast();
+		let forecastData = await loadForecast(url);
 		const { hourly } = forecastData
 		const { time, temperature_2m, showers, weathercode, windspeed_10m, winddirection_10m } = hourly;
 		let rainDescription = '';
 		
 		let indexRainHour = -1
+
 		for (let i = index; i < weathercode.length; i++) {
 			if (rainCode.includes(weathercode[i])) {
 				indexRainHour = i
@@ -66,7 +64,7 @@ module.exports = {
 
 		const strWMO = weathercode[indexRainHour].toString()
 		const [ , jam ] = time[indexRainHour].split('T')
-		// let jam = 0;
+
 		if (rainCode.includes(strWMO) && indexRainHour !== -1) {
 			rainDescription = weather_map.get(strWMO)
 		}
