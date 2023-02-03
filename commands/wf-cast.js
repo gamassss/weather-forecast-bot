@@ -62,11 +62,12 @@ module.exports = {
 			return;
 		}
 
-		const strWMO = weathercode[indexRainHour].toString()
+		const wmo = weathercode[indexRainHour]
 		const [ , jam ] = time[indexRainHour].split('T')
 
-		if (rainCode.includes(strWMO) && indexRainHour !== -1) {
-			rainDescription = weather_map.get(strWMO)
+		console.log(`tes: ${rainCode.includes(wmo)} ${typeof wmo} ${wmo} ${indexRainHour}`)
+		if (rainCode.includes(wmo) && indexRainHour !== -1) {
+			rainDescription = weather_map.get(wmo.toString())
 		}
 
 		const exampleEmbed = {
