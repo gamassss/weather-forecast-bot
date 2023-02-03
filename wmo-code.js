@@ -29,7 +29,7 @@ const weather_map = new Map([
 	['99', 'Thunderstorm with heavy hail'],
 ])
 
-const rainCode = [61, 63, 65, 66, 67, 80, 81, 82, 85, 86, 95, 96, 99];
+const rainCode = [3, 61, 63, 65, 66, 67, 80, 81, 82, 85, 86, 95, 96, 99];
 
 
 module.exports = { weather_map, rainCode }

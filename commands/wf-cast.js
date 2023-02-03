@@ -56,15 +56,16 @@ module.exports = {
 				break;
 			}
 		}
-
+		console.log(`index: ${indexRainHour} ${rainCode.includes(weathercode[18])} ${typeof weathercode[18]}`)
 		if (indexRainHour === -1) {
+			console.log(`index: ${indexRainHour}`)
 			await interaction.reply(`Happy no rain day for ${cityName} :)`)
 			return;
 		}
 
 		const wmo = weathercode[indexRainHour]
 		const [ , jam ] = time[indexRainHour].split('T')
-
+		console.log(`wmoCode: ${wmo}`)
 		console.log(`tes: ${rainCode.includes(wmo)} ${typeof wmo} ${wmo} ${indexRainHour}`)
 		if (rainCode.includes(wmo) && indexRainHour !== -1) {
 			rainDescription = weather_map.get(wmo.toString())
